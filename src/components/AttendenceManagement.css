@@ -1,0 +1,120 @@
+/* Attendance Management styles */
+.attendance-container {
+	max-width: 960px;
+	margin: 24px auto;
+	padding: 16px;
+	font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+	color: #222;
+}
+
+.attendance-title {
+	margin: 0 0 12px 0;
+	font-size: 20px;
+	font-weight: 600;
+	color: #1f2937;
+}
+
+.attendance-card {
+	background: #fff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 12px;
+	box-shadow: 0 1px 2px rgba(16,24,40,0.03);
+}
+
+.attendance-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.attendance-table thead th {
+	text-align: left;
+	padding: 10px 12px;
+	background: #fafafa;
+	border-bottom: 1px solid #e6e6e6;
+	font-size: 13px;
+	color: #374151;
+}
+
+.attendance-table tbody td {
+	padding: 10px 12px;
+	border-bottom: 1px solid #f3f4f6;
+	vertical-align: middle;
+	font-size: 14px;
+}
+
+.attendance-row:nth-child(even) {
+	background: #fbfbfb;
+}
+
+.attendance-empty {
+	text-align: center;
+	padding: 24px;
+	color: #6b7280;
+}
+
+.attendance-actions {
+	margin-top: 12px;
+	display: flex;
+	justify-content: flex-end;
+}
+
+.btn {
+	display: inline-block;
+	padding: 8px 14px;
+	border-radius: 6px;
+	border: none;
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.btn-save {
+	background: linear-gradient(180deg,#10b981,#059669);
+	color: #fff;
+}
+
+.attendance-info {
+	padding: 12px;
+	color: #374151;
+}
+
+.attendance-error {
+	padding: 12px;
+	color: #b91c1c;
+	background: #fff5f5;
+	border: 1px solid #fecaca;
+	border-radius: 6px;
+}
+
+@media (max-width: 700px) {
+	.attendance-table thead {
+		display: none;
+	}
+
+	.attendance-table, .attendance-table tbody, .attendance-table tr, .attendance-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.attendance-table tr {
+		margin-bottom: 12px;
+		border: 1px solid #eee;
+		border-radius: 6px;
+		padding: 8px;
+		background: #fff;
+	}
+
+	.attendance-table td {
+		padding: 8px 10px;
+		border: none;
+	}
+
+	.attendance-table td::before {
+		content: attr(data-label);
+		display: inline-block;
+		font-weight: 600;
+		width: 110px;
+		color: #374151;
+	}
+}
+

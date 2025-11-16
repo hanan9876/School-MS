@@ -1,0 +1,31 @@
+{
+  "name": "school-ms-backend",
+  "version": "1.0.0",
+  "description": "Backend for School Management System",
+  "main": "connect.js",
+  "type": "module",
+  "scripts": {
+    "start": "node connect.js",
+    "dev": "node connect.js",
+    "create-admin": "node scripts/createInitialAdmin.js",
+    "migrate-admins": "node scripts/migrateAdmins.js",
+    "create-teacher": "node scripts/createSampleTeacher.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "db": "^6.0.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongo": "^0.1.0",
+    "mongoose": "^8.0.0"
+  },
+  "keywords": [
+    "school",
+    "management",
+    "mongodb",
+    "nodejs"
+  ],
+  "author": "",
+  "license": "ISC"
+}
