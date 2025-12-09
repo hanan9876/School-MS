@@ -8,9 +8,13 @@ const AttendenceManagement = () => {
   const [students, setStudents] = useState([]);
   const [classes, setClasses] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState('');
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [attendance, setAttendance] = useState({});
+  const [attendanceHistory, setAttendanceHistory] = useState([]);
+  const [view, setView] = useState('take'); // 'take' or 'history'
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -95,6 +99,39 @@ const AttendenceManagement = () => {
     };
   }, [getAllStudents, getAllClasses, user]);
 
+  const loadAttendanceHistory = async (classId) => {
+    if (!classId) {
+      setError('Please select a class to view history');
+      return;
+    }
+
+    setHistoryLoading(true);
+    try {
+      const response = await fetch(`http://localhost:5000/api/attendance/class/${classId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch attendance history');
+      }
+      const data = await response.json();
+      if (data.success) {
+        setAttendanceHistory(data.records || []);
+      } else {
+        setError(data.error || 'Failed to load attendance history');
+      }
+    } catch (err) {
+      console.error('Error loading attendance history:', err);
+      setError('Failed to load attendance history. Make sure server is running.');
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  const handleViewChange = (viewType) => {
+    setView(viewType);
+    if (viewType === 'history' && selectedClassId) {
+      loadAttendanceHistory(selectedClassId);
+    }
+  };
+
   const toggleAttendance = (student) => {
     const id = student._id || student.id || student.studentId || student.rollNumber;
     setAttendance((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -112,6 +149,11 @@ const AttendenceManagement = () => {
 
     if (!user || !user.id) {
       alert('User information is missing. Please log in again.');
+      return;
+    }
+
+    if (!selectedDate) {
+      alert('Please select a date before saving attendance.');
       return;
     }
 
@@ -147,7 +189,7 @@ const AttendenceManagement = () => {
     }
 
     const payload = {
-      date: new Date().toISOString(),
+      date: new Date(selectedDate).toISOString(),
       classId: classIdToSave,
       teacherId: user.id,
       records
@@ -176,9 +218,12 @@ const AttendenceManagement = () => {
 
       const data = await response.json();
       if (data && data.success) {
-        alert('Attendance saved successfully');
+        alert('Attendance saved successfully for ' + selectedDate);
         console.log('Saved attendance response:', data);
-        // Optionally reset attendance state or refresh
+        // Refresh history if viewing it
+        if (view === 'history') {
+          loadAttendanceHistory(classIdToSave);
+        }
       } else {
         console.error('Save attendance failed:', data);
         alert('Failed to save attendance: ' + (data.error || 'Unknown error'));
@@ -220,11 +265,38 @@ const AttendenceManagement = () => {
         </div>
       )}
 
+      {/* View Toggle Buttons */}
+      <div style={{ marginBottom: 16, display: 'flex', gap: 8 }}>
+        <button
+          className={`btn ${view === 'take' ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={() => handleViewChange('take')}
+        >
+          Take Attendance
+        </button>
+        <button
+          className={`btn ${view === 'history' ? 'btn-primary' : 'btn-secondary'}`}
+          onClick={() => handleViewChange('history')}
+        >
+          View History
+        </button>
+      </div>
+
       {loading && <div className="attendance-info">Loading students...</div>}
       {error && <div className="attendance-error">{error}</div>}
 
-      {!loading && !error && (
+      {!loading && !error && view === 'take' && (
         <div className="attendance-card">
+          {/* Date Picker */}
+          <div style={{ marginBottom: 16, padding: '12px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+            <label style={{ marginRight: 8, fontWeight: 600 }}>Select Date:</label>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={{ padding: '6px 8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            />
+          </div>
+
           <table className="attendance-table">
             <thead>
               <tr>
@@ -280,12 +352,57 @@ const AttendenceManagement = () => {
           </table>
 
           <div className="attendance-actions">
-            <button className="btn btn-save" onClick={handleSave}>Save Attendance</button>
+            <button className="btn btn-save" onClick={handleSave}>Save Attendance for {selectedDate}</button>
           </div>
+        </div>
+      )}
+
+      {/* History View */}
+      {!loading && !error && view === 'history' && (
+        <div className="attendance-card">
+          {historyLoading && <div className="attendance-info">Loading attendance history...</div>}
+          {!historyLoading && (
+            <>
+              {attendanceHistory.length === 0 ? (
+                <div className="attendance-empty">No attendance records found for this class.</div>
+              ) : (
+                <div style={{ overflowX: 'auto' }}>
+                  {attendanceHistory.map((record) => (
+                    <div key={record._id} style={{ marginBottom: 20, padding: '12px', backgroundColor: '#f9f9f9', borderRadius: '4px', border: '1px solid #e0e0e0' }}>
+                      <div style={{ fontWeight: 600, marginBottom: 8 }}>
+                        Date: {new Date(record.date).toLocaleDateString()} | Teacher: {record.teacher?.name || 'Unknown'}
+                      </div>
+                      <table className="attendance-table" style={{ marginBottom: 8 }}>
+                        <thead>
+                          <tr>
+                            <th>Roll</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {record.records && record.records.map((att) => (
+                            <tr key={att.student?._id}>
+                              <td data-label="Roll">{att.student?.rollNumber || '-'}</td>
+                              <td data-label="Name">{att.student?.name || '-'}</td>
+                              <td data-label="Status" style={{ color: att.present ? 'green' : 'red', fontWeight: 600 }}>
+                                {att.present ? '✓ Present' : '✗ Absent'}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
         </div>
       )}
     </div>
   );
 };
+;
 
 export default AttendenceManagement;

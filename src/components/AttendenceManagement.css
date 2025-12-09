@@ -66,11 +66,34 @@
 	border: none;
 	cursor: pointer;
 	font-weight: 600;
+	transition: all 0.2s ease;
 }
 
 .btn-save {
 	background: linear-gradient(180deg,#10b981,#059669);
 	color: #fff;
+}
+
+.btn-save:hover {
+	background: linear-gradient(180deg,#059669,#047857);
+}
+
+.btn-primary {
+	background: linear-gradient(180deg,#3b82f6,#2563eb);
+	color: #fff;
+}
+
+.btn-primary:hover {
+	background: linear-gradient(180deg,#2563eb,#1d4ed8);
+}
+
+.btn-secondary {
+	background: #e5e7eb;
+	color: #374151;
+}
+
+.btn-secondary:hover {
+	background: #d1d5db;
 }
 
 .attendance-info {

@@ -1,11 +1,23 @@
-import React from 'react';
+import {React , useState }from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { PiStudentBold, PiBookOpen, PiClipboardText, PiChartLine, PiCalendar, PiNotebook } from 'react-icons/pi';
+import {
+  RiAdminFill,
+  RiUserSettingsFill,
+  RiBookOpenFill,
+  RiGraduationCapFill,
+  RiBarChartFill,
+  RiSettingsFill,
+} from 'react-icons/ri';
 import './Dashboard.css';
 
 const StudentDashboard = () => {
   const { user, logout } = useAuth();
+    const [activeTab, setActiveTab] = useState('overview');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -20,6 +32,13 @@ const StudentDashboard = () => {
     { icon: PiCalendar, title: 'Schedule', count: '8', color: '#9C27B0' },
     { icon: PiNotebook, title: 'Notes', count: '25', color: '#607D8B' }
   ];
+
+  const tabs = [
+      { id: 'overview', label: 'Overview', icon: RiBarChartFill },
+      { id: 'classes', label: 'Classes', icon: RiUserSettingsFill },
+      { id: 'teachers', label: 'Teachers', icon: RiBookOpenFill },
+      { id: 'students', label: 'Student Management', icon: RiGraduationCapFill },
+    ];
 
   return (
     <div className="dashboard">
@@ -39,19 +58,43 @@ const StudentDashboard = () => {
       </header>
 
       <main className="dashboard-main">
-        <div className="dashboard-grid">
-          {dashboardItems.map((item, index) => (
-            <div key={index} className="dashboard-card" style={{ borderLeftColor: item.color }}>
-              <div className="card-icon" style={{ color: item.color }}>
-                <item.icon />
-              </div>
-              <div className="card-content">
-                <h3>{item.title}</h3>
-                <p className="card-count">{item.count}</p>
-              </div>
-            </div>
+         <div className="tab-navigation">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <tab.icon />
+              {tab.label}
+            </button>
           ))}
         </div>
+
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <>
+            <div className="dashboard-grid">
+              {dashboardItems.map((item, index) => (
+                <div key={index} className="dashboard-card" style={{ borderLeftColor: item.color }}>
+                  <div className="card-icon" style={{ color: item.color }}>
+                    <item.icon />
+                  </div>
+                  <div className="card-content">
+                    <h3>{item.title}</h3>
+                    <p className="card-count">
+                      {loading ? 'Loading...' : item.count}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {error && (
+              <div className="error-message">
+                <p>{error}</p>
+              </div>
+            )}
 
         <div className="dashboard-section">
           <h2>Today's Classes</h2>
@@ -115,6 +158,8 @@ const StudentDashboard = () => {
             <button className="action-btn tertiary">Download Materials</button>
           </div>
         </div>
+        </>
+        )}
       </main>
     </div>
   );
