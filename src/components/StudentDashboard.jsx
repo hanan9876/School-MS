@@ -11,6 +11,7 @@ import {
   RiSettingsFill,
 } from 'react-icons/ri';
 import './Dashboard.css';
+import StudentClass from './StudentClass';
 
 const StudentDashboard = () => {
   const { user, logout } = useAuth();
@@ -160,6 +161,7 @@ const StudentDashboard = () => {
         </div>
         </>
         )}
+        {activeTab === 'classes' && <StudentClass />}
       </main>
     </div>
   );
