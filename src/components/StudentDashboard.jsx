@@ -36,9 +36,9 @@ const StudentDashboard = () => {
 
   const tabs = [
       { id: 'overview', label: 'Overview', icon: RiBarChartFill },
-      { id: 'classes', label: 'Classes', icon: RiUserSettingsFill },
-      { id: 'teachers', label: 'Teachers', icon: RiBookOpenFill },
-      { id: 'students', label: 'Student Management', icon: RiGraduationCapFill },
+      { id: 'classes', label: 'Class Attendence', icon: RiUserSettingsFill },
+      { id: 'teachers', label: 'Student Grades', icon: RiBookOpenFill },
+      { id: 'students', label: 'Any Complaints', icon: RiGraduationCapFill },
     ];
 
   return (

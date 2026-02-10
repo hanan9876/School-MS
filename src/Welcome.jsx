@@ -14,14 +14,7 @@ const Welcome = () => {
 
   return (
     <div className='welcome-container'>
-      <div className='welcome-background'>
-        <div className='background-shapes'>
-          <div className='shape shape-1'></div>
-          <div className='shape shape-2'></div>
-          <div className='shape shape-3'></div>
-        </div>
-      </div>
-      
+       
       <div className='welcome-content'>
         <div className='heading-section'>
           <h1 className='main-title'>Welcome to</h1>

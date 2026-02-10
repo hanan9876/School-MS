@@ -6,6 +6,7 @@ import './Dashboard.css';
 import { RiBarChartFill, RiUserSettingsFill, RiBookOpenFill, RiGraduationCapFill } from 'react-icons/ri';
 import AttendenceManagement from './AttendenceMangement';
 import TeacherClass from './TeacherClass';
+import GradeManagement from './GradeManagement';
 const TeacherDashboard = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
@@ -27,7 +28,7 @@ const TeacherDashboard = () => {
    const tabs = [
     { id: 'overview', label: 'Overview', icon: RiBarChartFill },
     { id: 'Attendence', label: 'Attendence Management', icon: RiBookOpenFill },
-    { id: 'students', label: 'Student Management', icon: RiGraduationCapFill },
+    { id: 'grades', label: 'Grades Management', icon: RiGraduationCapFill },
     { id: 'classes', label: 'Class Management', icon: RiBookOpenFill },
   ];
 
@@ -144,6 +145,7 @@ const TeacherDashboard = () => {
          )}
        {activeTab === 'Attendence' && <AttendenceManagement/>}
        {activeTab === 'classes' && <TeacherClass/>}
+       {activeTab === 'grades' && <GradeManagement/>}
 
       </main>
     </div>

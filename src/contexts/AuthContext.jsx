@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // API Base URL
+  // Always hit the backend directly so grades work (backend must be running: node connect.js)
   const API_BASE_URL = 'http://localhost:5000/api';
 
   // No more mock users - all authentication is now real
@@ -460,6 +460,75 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Helper: parse JSON from response or return error object (avoids "Unexpected token '<'" when server returns HTML)
+  const parseJsonResponse = async (response) => {
+    const text = await response.text();
+    try {
+      return text ? JSON.parse(text) : {};
+    } catch {
+      return {
+        success: false,
+        error: response.ok ? 'Invalid response from server.' : `Server error (${response.status}). Is the backend running with grade routes?`,
+      };
+    }
+  };
+
+  // Get grades for a class
+  const getGradesByClass = async (classId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/grade/class/${classId}`);
+      const data = await parseJsonResponse(response);
+      if (!response.ok && data.error === undefined) {
+        data.success = false;
+        data.error = data.error || `Request failed (${response.status}).`;
+      }
+      return data;
+    } catch (error) {
+      console.error('Get grades error:', error);
+      return { success: false, error: 'Network error. Please try again. Is the backend running?' };
+    }
+  };
+
+  // Save or update grade for a student in a class (optional subject, default 'Overall')
+  const saveGrade = async (classId, studentId, marks, subject = 'Overall') => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/grade`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ classId, studentId, marks, subject }),
+      });
+      const data = await parseJsonResponse(response);
+      if (!response.ok && data.error === undefined) {
+        data.success = false;
+        data.error = data.error || `Request failed (${response.status}).`;
+      }
+      return data;
+    } catch (error) {
+      console.error('Save grade error:', error);
+      return { success: false, error: 'Network error. Please try again. Is the backend running?' };
+    }
+  };
+
+  // Save multiple grades at once; each grade: { studentId, subject, marks }
+  const saveGradesBulk = async (classId, grades, term = 'Term 1') => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/grade/bulk`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ classId, grades, term }),
+      });
+      const data = await parseJsonResponse(response);
+      if (!response.ok && data.error === undefined) {
+        data.success = false;
+        data.error = data.error || `Request failed (${response.status}).`;
+      }
+      return data;
+    } catch (error) {
+      console.error('Save grades bulk error:', error);
+      return { success: false, error: 'Network error. Please try again. Is the backend running?' };
+    }
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -486,7 +555,10 @@ export const AuthProvider = ({ children }) => {
     toggleClassStatus,
     assignStudentToClass,
     removeStudentFromClass,
-    getAvailableTeachers
+    getAvailableTeachers,
+    getGradesByClass,
+    saveGrade,
+    saveGradesBulk
   };
 
   return (

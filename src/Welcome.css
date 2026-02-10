@@ -15,68 +15,6 @@
   padding: 2rem;
 }
 
-.welcome-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.background-shapes {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  opacity: 0.1;
-  animation: float 20s infinite ease-in-out;
-}
-
-.shape-1 {
-  width: 300px;
-  height: 300px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  top: -100px;
-  left: -100px;
-  animation-delay: 0s;
-}
-
-.shape-2 {
-  width: 400px;
-  height: 400px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  bottom: -150px;
-  right: -150px;
-  animation-delay: 5s;
-}
-
-.shape-3 {
-  width: 250px;
-  height: 250px;
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-  top: 50%;
-  right: 10%;
-  animation-delay: 10s;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  33% {
-    transform: translate(30px, -30px) rotate(120deg);
-  }
-  66% {
-    transform: translate(-20px, 20px) rotate(240deg);
-  }
-}
-
 .welcome-content {
   position: relative;
   z-index: 1;
@@ -87,7 +25,6 @@
 
 .heading-section {
   margin-bottom: 4rem;
-  animation: fadeInDown 0.8s ease-out;
 }
 
 .main-title {
@@ -121,7 +58,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  animation: fadeInUp 0.8s ease-out 0.3s both;
 }
 
 .role-card {
@@ -138,13 +74,17 @@
 }
 
 .role-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -246,37 +186,14 @@
   letter-spacing: 0.5px;
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .welcome-container {
     padding: 1rem;
-  min-height: 100vh;
-  height: auto;
-  padding-bottom: 2rem;
-  padding-top: 2rem;
-   display: flex;
+    min-height: 100vh;
+    height: auto;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+    display: flex;
     align-items: center;
     justify-content: center;
   }
@@ -344,7 +261,6 @@
   }
 }
 
-/* Active state for better feedback */
 .role-card:active {
   transform: translateY(-10px) scale(1.02);
 }
