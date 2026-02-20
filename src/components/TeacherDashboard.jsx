@@ -7,6 +7,7 @@ import { RiBarChartFill, RiUserSettingsFill, RiBookOpenFill, RiGraduationCapFill
 import AttendenceManagement from './AttendenceMangement';
 import TeacherClass from './TeacherClass';
 import GradeManagement from './GradeManagement';
+import ViewNotices from './ViewNotices';
 const TeacherDashboard = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
@@ -79,7 +80,7 @@ const TeacherDashboard = () => {
           ))}
         </div>
 
-        <div className="dashboard-section">
+        {/* <div className="dashboard-section">
           <h2>Today's Schedule</h2>
           <div className="schedule-list">
             <div className="schedule-item">
@@ -113,9 +114,11 @@ const TeacherDashboard = () => {
             <button className="action-btn secondary">Grade Submissions</button>
             <button className="action-btn tertiary">View Student Progress</button>
           </div>
-        </div>
+        </div> */}
 
-        <div className="dashboard-section">
+        <ViewNotices />
+
+        {/* <div className="dashboard-section">
           <h2>Recent Activity</h2>
           <div className="activity-list">
             <div className="activity-item">
@@ -140,7 +143,7 @@ const TeacherDashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
           </>
          )}
        {activeTab === 'Attendence' && <AttendenceManagement/>}

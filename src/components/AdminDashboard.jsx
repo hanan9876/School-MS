@@ -13,17 +13,21 @@ import AdminManagement from './AdminManagement';
 import TeacherManagement from './TeacherManagement';
 import StudentManagement from './StudentManagement';
 import ClassManagement from './ClassManagement';
+import ShowComplain from './ShowComplain';
 import './Dashboard.css';
+import { getComplaints } from '../utils/complaintsStorage';
+import NoticesSection from './Notice';
 
 const AdminDashboard = () => {
-  const { user, logout, getAllTeachers, getAllStudents } = useAuth();
+  const { user, logout, getAllTeachers, getAllStudents , getAllClasses} = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
   // States
   const [teachers, setTeachers] = useState([]);
   const [students, setStudents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -34,13 +38,15 @@ const AdminDashboard = () => {
     setLoading(true);
     setError('');
     try {
-      const [teacherResult, studentResult] = await Promise.all([
+      const [teacherResult, studentResult, classResult ] = await Promise.all([
         getAllTeachers(),
         getAllStudents(),
+        getAllClasses(),
       ]);
 
       if (teacherResult.success) {
         setTeachers(teacherResult.teachers || []);
+        setClasses(classResult.classes || []);
       } else {
         setError((prev) => prev + '\n' + (teacherResult.error || 'Error loading teachers'));
       }
@@ -65,9 +71,8 @@ const AdminDashboard = () => {
   const dashboardItems = [
     { icon: RiUserSettingsFill, title: 'Manage Teachers', count: teachers.length, color: '#4CAF50' },
     { icon: RiGraduationCapFill, title: 'Manage Students', count: students.length, color: '#2196F3' },
-    { icon: RiBookOpenFill, title: 'Manage Courses', count: 12, color: '#FF9800' },
-    { icon: RiBarChartFill, title: 'Reports & Analytics', count: 5, color: '#9C27B0' },
-    { icon: RiSettingsFill, title: 'System Settings', count: 8, color: '#607D8B' },
+    { icon: RiBookOpenFill, title: 'Manage Classes', count: classes.length, color: '#FF9800' },
+    { icon: RiBarChartFill, title: 'Complaints', count: getComplaints().length, color: '#9C27B0' },
   ];
 
   const tabs = [
@@ -76,6 +81,7 @@ const AdminDashboard = () => {
     { id: 'teachers', label: 'Teacher Management', icon: RiBookOpenFill },
     { id: 'students', label: 'Student Management', icon: RiGraduationCapFill },
     { id: 'classes', label: 'Class Management', icon: RiBookOpenFill },
+    { id: 'showComplaints', label: 'Show Complaints', icon: RiBookOpenFill },
   ];
 
   return (
@@ -135,41 +141,16 @@ const AdminDashboard = () => {
               </div>
             )}
 
-            <div className="dashboard-section">
+            {/* <div className="dashboard-section">
               <h2>Quick Actions</h2>
               <div className="quick-actions">
                 <button className="action-btn primary">Add New Teacher</button>
                 <button className="action-btn secondary">Add New Student</button>
                 <button className="action-btn tertiary">Generate Report</button>
               </div>
-            </div>
+            </div> */}
 
-            <div className="dashboard-section">
-              <h2>Recent Activity</h2>
-              <div className="activity-list">
-                <div className="activity-item">
-                  <div className="activity-icon">👤</div>
-                  <div className="activity-content">
-                    <p>New teacher registered: Sarah Johnson</p>
-                    <span className="activity-time">2 hours ago</span>
-                  </div>
-                </div>
-                <div className="activity-item">
-                  <div className="activity-icon">📚</div>
-                  <div className="activity-content">
-                    <p>Course "Mathematics 101" updated</p>
-                    <span className="activity-time">4 hours ago</span>
-                  </div>
-                </div>
-                <div className="activity-item">
-                  <div className="activity-icon">🎓</div>
-                  <div className="activity-content">
-                    <p>Student enrollment completed: 15 new students</p>
-                    <span className="activity-time">1 day ago</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <NoticesSection />
           </>
         )}
 
@@ -177,6 +158,7 @@ const AdminDashboard = () => {
         {activeTab === 'teachers' && <TeacherManagement />}
         {activeTab === 'students' && <StudentManagement />}
         {activeTab === 'classes' && <ClassManagement />}
+        {activeTab === 'showComplaints' && <ShowComplain />}
       </main>
     </div>
   );

@@ -262,6 +262,56 @@
   background: #ffe6e6;
 }
 
+/* Student grades list */
+.grade-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: #f8f9fa;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.grade-list-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #667eea;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.grade-list-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.grade-list-item:last-child {
+  border-bottom: none;
+}
+
+.grade-subject {
+  color: #333;
+}
+
+.grade-class-muted {
+  color: #666;
+  font-weight: normal;
+  font-size: 0.9rem;
+}
+
+.grade-marks {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #667eea;
+}
+
 @media (max-width: 768px) {
   .header-content {
     flex-direction: column;
@@ -279,5 +329,246 @@
   
   .action-btn {
     width: 100%;
+  }
+
+  .grade-list-header,
+  .grade-list-item {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+/* ========================= */
+/*        Notices Section    */
+/* ========================= */
+
+.notice-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.notice-form input,
+.notice-form textarea {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.notice-form input:focus,
+.notice-form textarea:focus {
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.15);
+}
+
+.notice-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.notice-form button {
+  width: fit-content;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.notice-form button:hover {
+  background-color: #45a049;
+  transform: translateY(-1px);
+}
+
+
+/* ========================= */
+/*      Notice List Items    */
+/* ========================= */
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 8px;
+  border-left: 4px solid #4CAF50;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.activity-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.activity-icon {
+  font-size: 20px;
+  margin-top: 4px;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-content p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.activity-time {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #777;
+}
+
+
+/* ========================= */
+/*     Notice Actions        */
+/* ========================= */
+
+.activity-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.activity-actions button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.activity-actions button:hover {
+  transform: scale(1.2);
+}
+
+.activity-actions button:first-child:hover {
+  color: #2196F3; /* edit */
+}
+
+.activity-actions button:last-child:hover {
+  color: #f44336; /* delete */
+}
+
+
+/* ========================= */
+/*        Responsive         */
+/* ========================= */
+
+@media (max-width: 768px) {
+  .activity-item {
+    flex-direction: column;
+  }
+
+  .activity-actions {
+    margin-top: 8px;
+  }
+}
+
+/* ============================ */
+/*      View Notices Page       */
+/* ============================ */
+
+.view-notices-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.view-notices-title {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+.no-notices {
+  text-align: center;
+  font-size: 14px;
+  color: #777;
+}
+
+
+/* ============================ */
+/*        Notice Cards          */
+/* ============================ */
+
+.notice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.notice-card {
+  display: flex;
+  gap: 14px;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 10px;
+  border-left: 5px solid #4CAF50;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.notice-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.notice-icon {
+  font-size: 26px;
+  margin-top: 4px;
+}
+
+.notice-body {
+  flex: 1;
+}
+
+.notice-title {
+  margin: 0;
+  font-size: 16px;
+  color: #222;
+}
+
+.notice-description {
+  margin: 6px 0 8px;
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.notice-time {
+  font-size: 12px;
+  color: #888;
+}
+
+
+/* ============================ */
+/*        Responsive            */
+/* ============================ */
+
+@media (max-width: 768px) {
+  .notice-card {
+    flex-direction: column;
+  }
+
+  .notice-icon {
+    font-size: 22px;
   }
 }

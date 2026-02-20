@@ -12,6 +12,9 @@ import {
 } from 'react-icons/ri';
 import './Dashboard.css';
 import StudentClass from './StudentClass';
+import StudentComplain from './StudentComplain';
+import StudentGrades from './StudentGrades';
+import ViewNotices from './ViewNotices';
 
 const StudentDashboard = () => {
   const { user, logout } = useAuth();
@@ -37,8 +40,8 @@ const StudentDashboard = () => {
   const tabs = [
       { id: 'overview', label: 'Overview', icon: RiBarChartFill },
       { id: 'classes', label: 'Class Attendence', icon: RiUserSettingsFill },
-      { id: 'teachers', label: 'Student Grades', icon: RiBookOpenFill },
-      { id: 'students', label: 'Any Complaints', icon: RiGraduationCapFill },
+      { id: 'studentgrades', label: 'Student Grades', icon: RiBookOpenFill },
+      { id: 'complaints', label: 'Any Complaints', icon: RiGraduationCapFill },
     ];
 
   return (
@@ -97,7 +100,9 @@ const StudentDashboard = () => {
               </div>
             )}
 
-        <div className="dashboard-section">
+            <ViewNotices />
+
+        {/* <div className="dashboard-section">
           <h2>Today's Classes</h2>
           <div className="schedule-list">
             <div className="schedule-item">
@@ -158,10 +163,12 @@ const StudentDashboard = () => {
             <button className="action-btn secondary">Check Grades</button>
             <button className="action-btn tertiary">Download Materials</button>
           </div>
-        </div>
+        </div> */}
         </>
         )}
         {activeTab === 'classes' && <StudentClass />}
+        {activeTab === 'complaints' && <StudentComplain />}
+        {activeTab === 'studentgrades' && <StudentGrades />}
       </main>
     </div>
   );
