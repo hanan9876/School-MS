@@ -337,9 +337,7 @@
   }
 }
 
-/* ========================= */
-/*        Notices Section    */
-/* ========================= */
+/*  Notices Section  */
 
 .notice-form {
   display: flex;
@@ -387,10 +385,6 @@
 }
 
 
-/* ========================= */
-/*      Notice List Items    */
-/* ========================= */
-
 .activity-list {
   display: flex;
   flex-direction: column;
@@ -437,10 +431,6 @@
 }
 
 
-/* ========================= */
-/*     Notice Actions        */
-/* ========================= */
-
 .activity-actions {
   display: flex;
   gap: 8px;
@@ -459,11 +449,11 @@
 }
 
 .activity-actions button:first-child:hover {
-  color: #2196F3; /* edit */
+  color: #2196F3; 
 }
 
 .activity-actions button:last-child:hover {
-  color: #f44336; /* delete */
+  color: #f44336; 
 }
 
 
@@ -481,9 +471,6 @@
   }
 }
 
-/* ============================ */
-/*      View Notices Page       */
-/* ============================ */
 
 .view-notices-container {
   max-width: 900px;
@@ -504,10 +491,6 @@
   color: #777;
 }
 
-
-/* ============================ */
-/*        Notice Cards          */
-/* ============================ */
 
 .notice-list {
   display: flex;
@@ -557,12 +540,6 @@
   font-size: 12px;
   color: #888;
 }
-
-
-/* ============================ */
-/*        Responsive            */
-/* ============================ */
-
 @media (max-width: 768px) {
   .notice-card {
     flex-direction: column;

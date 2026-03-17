@@ -102,7 +102,6 @@ const AdminDashboard = () => {
       </header>
 
       <main className="dashboard-main">
-        {/* Tab Navigation */}
         <div className="tab-navigation">
           {tabs.map((tab) => (
             <button
@@ -116,7 +115,6 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        {/* Tab Content */}
         {activeTab === 'overview' && (
           <>
             <div className="dashboard-grid">

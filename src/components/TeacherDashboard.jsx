@@ -1,4 +1,4 @@
-import React, { act , useState } from 'react';
+import React, { act , useState , useEffect} from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaChalkboardTeacher, FaBookOpen, FaUsers, FaClipboardList, FaChartLine, FaCalendarAlt } from 'react-icons/fa';
@@ -9,9 +9,41 @@ import TeacherClass from './TeacherClass';
 import GradeManagement from './GradeManagement';
 import ViewNotices from './ViewNotices';
 const TeacherDashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout , getAllClasses , getAllStudents } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [students, setStudents] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+   useEffect(() => {
+      loadDashboardData();
+    }, []);
+  const loadDashboardData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [studentResult, classResult ] = await Promise.all([
+        getAllStudents(),
+        getAllClasses(),
+      ]);
 
+      if (classResult.success) {
+        setClasses(classResult.classes || []);
+      } else {
+        setError((prev) => prev + '\n' + (classResult.error || 'Error loading classes'));
+      }
+
+      if (studentResult.success) {
+        setStudents(studentResult.students || []);
+      } else {
+        setError((prev) => prev + '\n' + (studentResult.error || 'Error loading students'));
+      }
+    } catch (err) {
+      setError('Failed to load dashboard data.');
+    } finally {
+      setLoading(false);
+    }
+  };
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -20,11 +52,8 @@ const TeacherDashboard = () => {
   };
 
   const dashboardItems = [
-    { icon: FaBookOpen, title: 'My Courses', count: '4', color: '#4CAF50' },
-    { icon: FaUsers, title: 'My Students', count: '45', color: '#2196F3' },
-    { icon: FaClipboardList, title: 'Assignments', count: '8', color: '#FF9800' },
-    { icon: FaChartLine, title: 'Grades', count: '120', color: '#9C27B0' },
-    { icon: FaCalendarAlt, title: 'Schedule', count: '12', color: '#607D8B' }
+    { icon: FaBookOpen, title: 'My Courses', count: classes.length, color: '#4CAF50' },
+    { icon: FaUsers, title: 'My Students', count: students.length, color: '#2196F3' },
   ];
    const tabs = [
     { id: 'overview', label: 'Overview', icon: RiBarChartFill },

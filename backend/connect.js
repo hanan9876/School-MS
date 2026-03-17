@@ -10,10 +10,11 @@ import attendanceRoutes from './routes/attendanceRoutes.js';
 import Grade from './models/Grade.js';
 import Class from './models/Class.js';
 import Student from './models/Student.js';
+import { GoogleGenAI } from "@google/genai";
 
 // Load environment variables
 dotenv.config();
-
+const gemini = new GoogleGenAI({});
 // ✅ Use correct default port for MongoDB (27017)
 const MONGODB_URL = process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/school_system';
 
@@ -30,6 +31,52 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api', (req, res, next) => {
   console.log(`[API] ${req.method} ${req.originalUrl}`);
   next();
+});
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message, role } = req.body;
+
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ success: false, error: 'Message required' });
+    }
+
+    const response = await gemini.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `
+You are an AI assistant that can answer any general knowledge question, 
+ and help students with their any question.
+
+Rules:
+- If the question is general knowledge (like capitals, Maths, history, science), answer normally.
+- Never prepend extra unnecessary text about school unless relevant.
+- Provide concise answers.
+
+User question:
+${message}
+            `
+            }]
+        }
+      ]
+    });
+
+    res.json({
+      success: true,
+      reply: response.text
+    });
+
+  } catch (error) {
+    console.error("❌ Gemini Chat Error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Gemini chatbot failed"
+    });
+  }
 });
 
 // Grade API – register FIRST so nothing else can take these paths
@@ -192,7 +239,6 @@ app.use('/api', (req, res) => {
   res.status(404).json({ success: false, error: 'API route not found', path: req.path });
 });
 
-console.log('📋 Grade API registered at GET/PUT /api/grade, GET /api/grade/class/:classId, POST /api/grade/bulk');
 
 // MongoDB connection function
 const connectDB = async () => {

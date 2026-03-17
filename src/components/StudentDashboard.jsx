@@ -1,4 +1,4 @@
-import {React , useState }from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { PiStudentBold, PiBookOpen, PiClipboardText, PiChartLine, PiCalendar, PiNotebook } from 'react-icons/pi';
@@ -15,12 +15,16 @@ import StudentClass from './StudentClass';
 import StudentComplain from './StudentComplain';
 import StudentGrades from './StudentGrades';
 import ViewNotices from './ViewNotices';
+import Chatbot from './Chatbot';
+import { getComplaints } from '../utils/complaintsStorage';
 
 const StudentDashboard = () => {
-  const { user, logout } = useAuth();
+const { user, logout, getGradesByClass } = useAuth();
     const [activeTab, setActiveTab] = useState('overview');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [attendancePercent, setAttendancePercent] = useState(null);
+const [gradePercent, setGradePercent] = useState(null);
   
   const navigate = useNavigate();
 
@@ -28,14 +32,98 @@ const StudentDashboard = () => {
     logout();
     navigate('/');
   };
+  useEffect(() => {
+  const fetchOverviewData = async () => {
+    if (!user?.id) return;
+
+    setLoading(true);
+    setError('');
+
+    try {
+      // 1️⃣ Get student
+      const studentRes = await fetch(`http://localhost:5000/api/student/${user.id}`);
+      const studentData = await studentRes.json();
+
+      let classId = null;
+
+      if (studentData?.success && studentData?.student?.assignedClass) {
+        const ac = studentData.student.assignedClass;
+        classId = typeof ac === 'object' ? ac._id : ac;
+      }
+
+      if (!classId) return;
+
+      // 2️⃣ Attendance
+      const attRes = await fetch(`http://localhost:5000/api/attendance/class/${classId}`);
+      const attData = await attRes.json();
+      const records = attData?.records || [];
+
+      let total = records.length;
+      let present = 0;
+
+      records.forEach(r => {
+        const rec = r.records?.find(rr =>
+          String(rr.student?._id || rr.student) === String(user.id)
+        );
+        if (rec?.present) present++;
+      });
+
+      const attendance = total === 0 ? 0 : Math.round((present / total) * 100);
+      setAttendancePercent(attendance);
+
+      const gradesRes = await getGradesByClass(classId);
+
+          if (gradesRes?.success) {
+          const studentGrades = gradesRes.grades.filter(g =>
+            String(g.student?._id || g.student) === String(user.id)
+          );
+
+          if (studentGrades.length > 0) {
+            const totalMarks = studentGrades.reduce(
+              (sum, g) => sum + Number(g.marks || 0),
+              0
+            );
+
+            const maxMarks = studentGrades.length * 100;
+            const percentage = Math.round((totalMarks / maxMarks) * 100);
+
+            setGradePercent(percentage);
+          } else {
+            setGradePercent(0);
+          }
+        }
+
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load overview data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchOverviewData();
+}, [user]);
 
   const dashboardItems = [
-    { icon: PiBookOpen, title: 'My Courses', count: '5', color: '#4CAF50' },
-    { icon: PiClipboardText, title: 'Assignments', count: '12', color: '#2196F3' },
-    { icon: PiChartLine, title: 'Grades', count: 'A-', color: '#FF9800' },
-    { icon: PiCalendar, title: 'Schedule', count: '8', color: '#9C27B0' },
-    { icon: PiNotebook, title: 'Notes', count: '25', color: '#607D8B' }
-  ];
+  {
+    icon: PiClipboardText,
+    title: 'Attendance',
+    count: attendancePercent !== null ? `${attendancePercent}%` : '0%',
+    color: '#2196F3'
+  },
+  {
+    icon: PiChartLine,
+    title: 'Grades',
+    count: gradePercent !== null ? `${gradePercent}%` : '0%',
+    color: '#FF9800'
+  },
+  {
+    icon: PiCalendar,
+    title: 'Complaints',
+    count: getComplaints().length,
+    color: '#9C27B0'
+  },
+];
 
   const tabs = [
       { id: 'overview', label: 'Overview', icon: RiBarChartFill },
@@ -100,6 +188,7 @@ const StudentDashboard = () => {
               </div>
             )}
 
+            <Chatbot />
             <ViewNotices />
 
         {/* <div className="dashboard-section">
